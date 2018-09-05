@@ -1,0 +1,205 @@
+---
+title: "README"
+output:
+  html_document: default
+---
+
+## Practical 2 Bonus Assignment: Lisa Martin
+
+This is my work for Practical 2's Bonus assignment
+
+
+#### Loading required packages and data:
+```{r setup, results = "hide", message=FALSE, warning=FALSE}
+#Seperate script used to load required packages
+source("code/packageload.R") 
+
+# Loading required data
+data <-
+  read_rds("data/Fin_Data_SA_US_NKY.rds")
+
+data <- na.omit(data)
+```
+
+
+
+#### Calculate the cap-weighted monthly index returns for every sector for each country:
+
+I assumed that the formula to use for this is $Index_t = {Market Cap_t}/{Market Cap_{base}}$
+In this case, I attempted to calculate a month on month return, therefore the base is the previous month for each period.However, this seemed to cause errors.
+
+Upon consulting my peers, it seemed that I could first calculate the monthly returns and simply weight them by the market cap of each ticker in each sector. 
+
+```{r Question 1, message=FALSE, warning=FALSE}
+
+MonthlyReturns <- 
+  #Finding the last observation of each month for each ticker in each sector per country
+  data %>% 
+  group_by(Universe, BICS_LEVEL_1_SECTOR_NAME, Ticker) %>% 
+  mutate(YM = format(date,"%Y_%B")) %>% 
+  ungroup() %>% 
+  group_by(Universe, BICS_LEVEL_1_SECTOR_NAME, YM) %>%
+  filter(date == last(date)) %>% 
+  ungroup() %>% 
+  
+  #Calculating the monthly return for each ticker, Remove the NA returns that would result during JAN
+  group_by(Ticker) %>%
+  arrange(date) %>% 
+  mutate(Returns = TRI/lag(TRI) - 1) %>% 
+  mutate(Returns = coalesce(Returns, 0)) %>%  
+  ungroup() %>% 
+  
+  #Create weights for each ticker in terms of their contribution to total market cap
+  group_by(Universe, BICS_LEVEL_1_SECTOR_NAME, YM) %>% 
+  mutate(SectorMarketCap = sum(Market.Cap)) %>%
+  mutate(WeightedMarketCap = Market.Cap/SectorMarketCap) %>% 
+  
+  #Calculating cap-weighted monthly returns by summing all of the weighted returns per sector
+  mutate(WeightedReturns = sum(Returns*WeightedMarketCap)) %>% 
+  summarise(IndexReturn = mean(WeightedReturns)) %>%
+  
+  ungroup()
+```
+
+
+
+
+#### Calculate the sharpe ratio for the equally weighted by country, cap-weighted index returns since 2017:
+
+```{rQuestion 2, message=FALSE, warning=FALSE}
+MonthlyReturns_Sharpe <- 
+  MonthlyReturns  %>% 
+  group_by(Universe, BICS_LEVEL_1_SECTOR_NAME) %>% 
+  summarise(Sharpe = mean(MonthlyReturns, na.rm = TRUE) / sd(MonthlyReturns, na.rm = TRUE)) %>%
+  ungroup() 
+```
+
+This (above) method follows the Practical, however returns an error. 
+
+#### Plot all the cumulative returns for the Financials indexes of the three countries (whose Financials index outperformed?):
+
+```{r Question 3, message=FALSE, warning=FALSE}
+Fin_Index_Returns <-
+  #Finding the last observation of each month for each ticker in each sector per country
+  data %>% 
+  group_by(Universe, BICS_LEVEL_1_SECTOR_NAME, Ticker) %>% 
+  mutate(YM = format(date,"%Y_%B")) %>% 
+  ungroup() %>% 
+  group_by(Universe, BICS_LEVEL_1_SECTOR_NAME, YM) %>%
+  filter(date == last(date)) %>% 
+  ungroup() %>% 
+  
+  #Calculating the monthly return for each ticker, Remove the NA returns that would result during JAN
+  group_by(Ticker) %>%
+  arrange(date) %>% 
+  mutate(Returns = TRI/lag(TRI) - 1) %>% 
+  mutate(Returns = coalesce(Returns, 0)) %>%  
+  ungroup() %>% 
+  
+  #Create weights for each ticker in terms of their contribution to total market cap
+  group_by(Universe, BICS_LEVEL_1_SECTOR_NAME, YM) %>% 
+  mutate(SectorMarketCap = sum(Market.Cap)) %>%
+  mutate(WeightedMarketCap = Market.Cap/SectorMarketCap) %>% 
+  
+  #Calculating cap-weighted monthly returns by summing all of the weighted returns per sector
+  mutate(WeightedReturns = sum(Returns*WeightedMarketCap)) %>% 
+  ungroup() %>% 
+  
+  #We need to filter the data to only focus on Financials
+  group_by(BICS_LEVEL_1_SECTOR_NAME) %>% 
+  filter(BICS_LEVEL_1_SECTOR_NAME %in% "Financials") %>% 
+  
+  #Next we can calculate cumulative returns per country
+  group_by(Universe) %>% 
+  mutate(Cum_IndexReturns = cumprod(1 + WeightedReturns)) %>% 
+  ungroup()
+
+  #Now we can plot the financial sectors cumulative returns
+  ggplot(Fin_Index_Returns) +
+  geom_line(aes(x = date, y = Cum_IndexReturns, color=Universe))
+  
+```
+
+We can see that Japan has underperformed throughout the period in question, but South Africa has outperformed, by reaching the highest cumultive return over the period.  
+
+
+
+
+#### Calculate the JALSH index returns, by filtering the top 95% of Market Cap:
+(Tip: use arrange and cumsum of weights. . . careful with your group_bys. . . )
+
+```{r Question 4, message=FALSE, warning=FALSE}
+MonthlyReturns_JALSH <- 
+  #Finding the last observation of each month for each ticker in each sector per country
+  data %>% 
+  group_by(Universe, BICS_LEVEL_1_SECTOR_NAME, Ticker) %>% 
+  mutate(YM = format(date,"%Y_%B")) %>% 
+  ungroup() %>% 
+  group_by(Universe, BICS_LEVEL_1_SECTOR_NAME, YM) %>%
+  filter(date == last(date)) %>% 
+  ungroup() %>% 
+  
+  #Calculating the monthly return for each ticker, Remove the NA returns that would result during JAN
+  group_by(Ticker) %>%
+  arrange(date) %>% 
+  mutate(Returns = TRI/lag(TRI) - 1) %>% 
+  mutate(Returns = coalesce(Returns, 0)) %>%  
+  ungroup() %>% 
+  
+  #Create weights for each ticker in terms of their contribution to total market cap
+  group_by(Universe, BICS_LEVEL_1_SECTOR_NAME, YM) %>% 
+  mutate(SectorMarketCap = sum(Market.Cap)) %>%
+  mutate(WeightedMarketCap = Market.Cap/SectorMarketCap) %>% 
+  
+  #We only want to do this for JALSH - remove other countries
+  filter(Universe %in% "JALSHAll") %>% 
+  
+  #Arrange the weights and find top 95%
+  arrange(WeightedMarketCap) %>% 
+  mutate(CumWeight = cumsum(WeightedMarketCap)) %>% 
+  filter(CumWeight >= 0.05) %>% 
+  
+  #Find the weighted returns for the top 95% of JALSH
+  mutate(WeightedReturn = sum(Returns*WeightedMarketCap)) %>%
+  summarise(JALSHReturn = mean(WeightedReturn)) %>%
+  ungroup()
+
+```
+
+
+
+
+#### Calculate and visually compare the rolling 60 day standard deviation for the Materials sectors
+of each country:
+
+```{r Question 5, message=FALSE, warning=FALSE}
+Mat_IndexReturns <-
+  #First we need to filter the data to only focus on Materials
+  data %>% 
+  group_by(BICS_LEVEL_1_SECTOR_NAME) %>% 
+  filter(BICS_LEVEL_1_SECTOR_NAME %in% "Materials") %>% 
+
+  #Calculate the DAILY returns for each stock in the sector per country, Remove the NA returns that would result in the first period
+  group_by(Ticker) %>%
+  arrange(date) %>% 
+  mutate(Returns = TRI/lag(TRI) - 1) %>% 
+  mutate(Returns = coalesce(Returns, 0)) %>%  
+  ungroup() %>% 
+  
+  #For each country, calculate the weighted retrun for the sector
+  group_by(Universe, date) %>% 
+  mutate(SectorMarketCap = sum(Market.Cap)) %>%
+  mutate(WeightedMarketCap = Market.Cap/SectorMarketCap) %>% 
+  mutate(WeightedReturns = sum(Returns*WeightedMarketCap)) %>% 
+  summarise(IndexReturn = mean(WeightedReturns)) %>%
+  ungroup() %>% 
+  
+  
+  tbl_xts(., cols_to_xts = "IndexReturn", spread_by = "Universe")
+
+  #Plot the rolling performance of the countries materials sectors using SD
+  chart.RollingPerformance(R = Mat_IndexReturns, FUN = "sd", 
+      width = 60, main = "Rolling 60 Day Standard Deviation for Materials Sector", 
+      legend.loc = "bottom")
+```
+
