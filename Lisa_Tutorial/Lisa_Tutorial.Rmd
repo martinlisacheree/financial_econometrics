@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 # IMPORTANT: Change settings here, but DO NOT change the spacing. 
 # Remove comments and add values where applicable. 
@@ -174,3 +175,181 @@ The above plot illusatrates the cumulative returns of the equally weighted portf
 \newpage
 
 # References
+=======
+---
+# IMPORTANT: Change settings here, but DO NOT change the spacing. 
+# Remove comments and add values where applicable. 
+# The descriptions below should be self-explanatory
+
+title: "Texevier Tutorial"
+subtitle: "Financial Econometrics 871"
+
+documentclass: "elsarticle"
+
+# Comment: ----- Follow this pattern for up to 5 authors
+Author1: "Lisa-Cheree Martin"  # First Author
+Ref1: "Stellenbosch University, Stellenbosch, South Africa" # First Author's Affiliation
+Email1: "18190642\\@sun.ac.za" # First Author's Email address
+
+CorrespAuthor_1: TRUE  # If corresponding author is author 3, e.g., use CorrespAuthor_3: TRUE
+
+keywords: "Univariate GARCH" # Use \\sep to separate
+JELCodes: ""
+
+# Comment: ----- Manage headers and footers:
+#BottomLFooter: $Title$
+#BottomCFooter:
+#TopLHeader: \leftmark # Adds section name at topleft. Remove comment to add it.
+BottomRFooter: "\\footnotesize Page \\thepage\\" # Add a '#' before this line to remove footer.
+addtoprule: TRUE
+addfootrule: TRUE               # Use if footers added. Add '#' to remove line.
+
+# Setting page margins:
+margin: 2 # Sides
+bottom: 2 # bottom
+top: 2.5 # Top
+
+linenumbers: FALSE # Used when submitting to journal
+AddTitle: TRUE # Used when submitting to peer reviewed platform. This will remove author names. 
+
+HardSet_layout: TRUE # Hard-set the spacing of words in your document. This will stop LaTeX squashing text to fit on pages, e.g. This is done by hard-setting the spacing dimensions. Set to FALSE if you want LaTeX to optimize this for your paper. 
+bibliography: Tex/ref.bib       # Do not edit: Keep this naming convention and location.
+RemovePreprintSubmittedTo: TRUE  # Removes the 'preprint submitted to...' at bottom of titlepage
+Journal: "Journal of Finance"   # Journal that the paper will be submitting to, if RemovePreprintSubmittedTo is set to TRUE.
+toc: no                         # Add a table of contents
+numbersections: no              # Should sections (and thus figures and tables) be numbered?
+fontsize: 11pt                  # Set fontsize
+linestretch: 1.2                # Set distance between lines.
+link-citations: TRUE            # This creates dynamic links to the papers in reference list.
+output:
+  pdf_document:
+    keep_tex: TRUE
+    template: Tex/TexDefault.txt
+    fig_width: 3.5 # Adjust default figure sizes. This can also be done in the chunks of the text.
+    fig_height: 3.5
+    include:
+      in_header: Tex/packages.txt # Reference file with extra packages
+abstract: |
+  This is an assignment for the Financial Econometrics 871 course offered at Stellenbosch University. The aim of this tut is to work in Texevier and get a sense of what is required for the larger research project. The results are secondary to the goal of successfully being able to create a neat write-up and include figures and tables with results.
+---
+
+<!-- First: Set your default preferences for chunk options: -->
+
+<!-- If you want a chunk's code to be printed, set echo = TRUE. message = FALSE stops R printing ugly package loading details in your final paper too. I also suggest setting warning = FALSE and checking for warnings in R, else you might find ugly warnings in your paper. -->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 5, fig.pos="H", fig.pos = 'H')
+
+source("code/Packages.R")
+source("code/Data_Fetch.R")
+# Note: Include = FALSE implies the code is executed, but not printed in your pdf.
+# warning and message = FALSE implies ugly messages and warnings are removed from your pdf. These should be picked up when you execute the command chunks (code sections below) in your rmd, not printed in your paper!
+
+```
+
+
+<!-- ############################## -->
+<!-- # Start Writing here: -->
+<!-- ############################## -->
+
+# Question 1 \label{Q1}
+
+## Create a summary table showing the first and second moments of the returns of these stocks for the following periods:
+
+
+  * 2006 - 2008
+
+```{r Q1_Table1, results = 'asis'}
+library(xtable)
+source("code/Returns_Calculator.R")
+source("code/Moments_Calculator.R")
+
+  print.xtable(xtable(moments1, caption = "1st and 2nd Moments of Stock Returns, 2006-2008 \\label{tab1}"), 
+             floating = TRUE,
+             table.placement = 'H', 
+             comment = FALSE,
+             scalebox='0.9',
+             caption.placement = 'bottom'
+             )
+  
+
+```
+ 
+ 
+ 
+ 
+  * 2010 - 2013
+  
+```{r Q1_Table2, results = 'asis'}
+
+  print.xtable(xtable(moments2, caption = "1st and 2nd Moments of Stock Returns, 2010-2013 \\label{tab2}"), 
+             floating = TRUE,
+             table.placement = 'H', 
+             comment = FALSE,
+             scalebox='0.9',
+             caption.placement = 'bottom'
+             )
+```
+For this question, first the returns of each stock over the entire period were calculated. Next, the first and second moments of each are calculated over the two periods before (and including) and after the GFC of 2007/08. The resulting moments of each stock are then summarised (above).
+
+Note: The returns calculation produces two datasets: 1) a tidy dataset with the returns of each stock, 2) a wide dataset with the log-returns for each stock (for use at a later stage). The wide dataset is created by using the `spread()` function on the tidy dataset, after removing the _Close_ and _Return_ columns. 
+
+
+## Comment on the differences between the different periods
+
+Mean returns in the period 2006-2008 are lower than in the period 2010-2013. This makes sense as the first period includes the Global Financial Crisis. The variance is also lower during the period following the crisis.The high variance during the first period is indicative of the panic that struck during the crisis, and the high volatility that followed the crash. 
+
+Look at the following completely random in-text reference: @tsay1989 
+
+
+# Question 2 \label{Q2}
+
+## Calculate the unconditional (full sample) correlations between the stocks.
+
+
+```{r Q2_Table, results = 'asis'}
+
+  print.xtable(xtable(cor(dailydata[, c(2,3,4,5,6,7,8)], use = "complete.obs"), caption = "Unconditional Correlations Between the Stocks \\label{tab3}"), 
+             floating = TRUE,
+             table.placement = 'H',
+             comment = FALSE,
+             scalebox='0.7',
+             caption.placement = 'bottom'
+             )
+```
+
+
+#  Question 3 \label{Q3}
+
+## Plot the univariate GARCH ht processes for each of the series.
+
+The wide dataset of log-returns of each stock (produced in the returns calculation of Question 1 \ref{Q1}) is used for this question. 
+
+
+```{r figure1, warning =  FALSE, fig.align = 'center', fig.cap = "GARCH Univariate Plot \\label{plot1}", fig.ext = 'png'}
+
+source("code/GARCH_Calculator.R")
+plot(garchfit1, which = "all")  
+
+```
+
+
+#  Question 4 \label{Q4}
+
+## Plot the cumulative returns series of a portfolio that is equally weighted to each of the stocks - reweighted each year on the last day of June
+
+```{r figure2, warning =  FALSE, fig.align = 'center', fig.cap = "Cumulative Plot \\label{plot2}", fig.ext = 'png'}
+
+source("code/Cumulative_Returns_Calculator.R")
+
+ggplot(cumporteqw) + 
+  geom_line(aes(date, Cum_Ret), color = "steelblue") +
+  theme_bw() + labs(title = "Portfolio Cumulative Return")
+```
+
+The above plot illusatrates the cumulative returns of the equally weighted portfolio of the stocks, over the entire period. I was unable to annually reweight the portfolio on the last day of June.
+
+\newpage
+
+# References
+>>>>>>> 3dc00ed77eacc1a7de76b869918382bec92f4710

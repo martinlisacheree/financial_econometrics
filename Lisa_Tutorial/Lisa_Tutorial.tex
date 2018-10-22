@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 \documentclass[11pt,preprint, authoryear]{elsarticle}
 
 \usepackage{lmodern}
@@ -382,3 +383,389 @@ Processes.'' \emph{Journal of the American Statistical Association} 84
 
 
 \end{document}
+=======
+\documentclass[11pt,preprint, authoryear]{elsarticle}
+
+\usepackage{lmodern}
+%%%% My spacing
+\usepackage{setspace}
+\setstretch{1.2}
+\DeclareMathSizes{12}{14}{10}{10}
+
+% Wrap around which gives all figures included the [H] command, or places it "here". This can be tedious to code in Rmarkdown.
+\usepackage{float}
+\let\origfigure\figure
+\let\endorigfigure\endfigure
+\renewenvironment{figure}[1][2] {
+    \expandafter\origfigure\expandafter[H]
+} {
+    \endorigfigure
+}
+
+\let\origtable\table
+\let\endorigtable\endtable
+\renewenvironment{table}[1][2] {
+    \expandafter\origtable\expandafter[H]
+} {
+    \endorigtable
+}
+
+
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+
+\usepackage{amssymb, amsmath, amsthm, amsfonts}
+
+\def\bibsection{\section*{References}} %%% Make "References" appear before bibliography
+
+
+\usepackage[round]{natbib}
+\bibliographystyle{plainnat}
+
+\usepackage{longtable}
+\usepackage[margin=2cm,bottom=2cm,top=2.5cm, includefoot]{geometry}
+\usepackage{fancyhdr}
+\usepackage[bottom, hang, flushmargin]{footmisc}
+\usepackage{graphicx}
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+\numberwithin{table}{section}
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{1.3ex plus 0.5ex minus 0.3ex}
+\usepackage{textcomp}
+\renewcommand{\headrulewidth}{0.2pt}
+\renewcommand{\footrulewidth}{0.3pt}
+
+\usepackage{array}
+\newcolumntype{x}[1]{>{\centering\arraybackslash\hspace{0pt}}p{#1}}
+
+%%%%  Remove the "preprint submitted to" part. Don't worry about this either, it just looks better without it:
+\makeatletter
+\def\ps@pprintTitle{%
+  \let\@oddhead\@empty
+  \let\@evenhead\@empty
+  \let\@oddfoot\@empty
+  \let\@evenfoot\@oddfoot
+}
+\makeatother
+
+ \def\tightlist{} % This allows for subbullets!
+
+\usepackage{hyperref}
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            colorlinks=true,
+            citecolor=blue,
+            urlcolor=blue,
+            linkcolor=blue,
+            pdfborder={0 0 0}}
+
+
+% The following packages allow huxtable to work:
+\usepackage{siunitx}
+\usepackage{multirow}
+\usepackage{hhline}
+\usepackage{calc}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{colortbl}
+
+\urlstyle{same}  % don't use monospace font for urls
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\setcounter{secnumdepth}{0}
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+
+%%% Include extra packages specified by user
+% Insert custom packages here as follows
+% \usepackage{tikz}
+
+%%% Hard setting column skips for reports - this ensures greater consistency and control over the length settings in the document.
+%% page layout
+%% paragraphs
+\setlength{\baselineskip}{12pt plus 0pt minus 0pt}
+\setlength{\parskip}{12pt plus 0pt minus 0pt}
+\setlength{\parindent}{0pt plus 0pt minus 0pt}
+%% floats
+\setlength{\floatsep}{12pt plus 0 pt minus 0pt}
+\setlength{\textfloatsep}{20pt plus 0pt minus 0pt}
+\setlength{\intextsep}{14pt plus 0pt minus 0pt}
+\setlength{\dbltextfloatsep}{20pt plus 0pt minus 0pt}
+\setlength{\dblfloatsep}{14pt plus 0pt minus 0pt}
+%% maths
+\setlength{\abovedisplayskip}{12pt plus 0pt minus 0pt}
+\setlength{\belowdisplayskip}{12pt plus 0pt minus 0pt}
+%% lists
+\setlength{\topsep}{10pt plus 0pt minus 0pt}
+\setlength{\partopsep}{3pt plus 0pt minus 0pt}
+\setlength{\itemsep}{5pt plus 0pt minus 0pt}
+\setlength{\labelsep}{8mm plus 0mm minus 0mm}
+\setlength{\parsep}{\the\parskip}
+\setlength{\listparindent}{\the\parindent}
+%% verbatim
+\setlength{\fboxsep}{5pt plus 0pt minus 0pt}
+
+
+
+\begin{document}
+
+\begin{frontmatter}  %
+
+\title{Texevier Tutorial}
+
+% Set to FALSE if wanting to remove title (for submission)
+
+
+
+
+\author[Add1]{Lisa-Cheree Martin}
+\ead{18190642@sun.ac.za}
+
+
+
+
+
+\address[Add1]{Stellenbosch University, Stellenbosch, South Africa}
+
+\cortext[cor]{Corresponding author: Lisa-Cheree Martin}
+
+\begin{abstract}
+\small{
+This is an assignment for the Financial Econometrics 871 course offered
+at Stellenbosch University. The aim of this tut is to work in Texevier
+and get a sense of what is required for the larger research project. The
+results are secondary to the goal of successfully being able to create a
+neat write-up and include figures and tables with results.
+}
+\end{abstract}
+
+\vspace{1cm}
+
+\begin{keyword}
+\footnotesize{
+Univariate GARCH \\ \vspace{0.3cm}
+\textit{JEL classification} 
+}
+\end{keyword}
+\vspace{0.5cm}
+\end{frontmatter}
+
+
+
+%________________________
+% Header and Footers
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{fancy}
+\chead{}
+\rhead{Financial Econometrics 871}
+\lfoot{}
+\rfoot{\footnotesize Page \thepage\\}
+\lhead{}
+%\rfoot{\footnotesize Page \thepage\ } % "e.g. Page 2"
+\cfoot{}
+
+%\setlength\headheight{30pt}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%________________________
+
+\headsep 35pt % So that header does not go over title
+
+
+
+
+\section{\texorpdfstring{Question 1
+\label{Q1}}{Question 1 }}\label{question-1}
+
+\subsection{Create a summary table showing the first and second moments
+of the returns of these stocks for the following
+periods:}\label{create-a-summary-table-showing-the-first-and-second-moments-of-the-returns-of-these-stocks-for-the-following-periods}
+
+\begin{itemize}
+\tightlist
+\item
+  2006 - 2008
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\scalebox{0.9}{
+\begin{tabular}{rlrr}
+  \hline
+ & Stock & mean & variance \\ 
+  \hline
+1 & JSE.ABSP.Close & -0.02 & 0.01 \\ 
+  2 & JSE.BVT.Close & 0.03 & 0.05 \\ 
+  3 & JSE.FSR.Close & 0.01 & 0.06 \\ 
+  4 & JSE.NBKP.Close & -0.03 & 0.01 \\ 
+  5 & JSE.RMH.Close & 0.03 & 0.07 \\ 
+  6 & JSE.SBK.Close & 0.04 & 0.06 \\ 
+  7 & JSE.SLM.Close & 0.04 & 0.05 \\ 
+   \hline
+\end{tabular}
+}
+\caption{1st and 2nd Moments of Stock Returns, 2006-2008 \label{tab1}} 
+\end{table}
+
+\begin{itemize}
+\tightlist
+\item
+  2010 - 2013
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\scalebox{0.9}{
+\begin{tabular}{rlrr}
+  \hline
+ & Stock & mean & variance \\ 
+  \hline
+1 & JSE.ABSP.Close & 0.01 & 0.01 \\ 
+  2 & JSE.BVT.Close & 0.08 & 0.02 \\ 
+  3 & JSE.FSR.Close & 0.08 & 0.03 \\ 
+  4 & JSE.NBKP.Close & 0.01 & 0.01 \\ 
+  5 & JSE.RMH.Close & 0.07 & 0.04 \\ 
+  6 & JSE.SBK.Close & 0.03 & 0.02 \\ 
+  7 & JSE.SLM.Close & 0.09 & 0.02 \\ 
+   \hline
+\end{tabular}
+}
+\caption{1st and 2nd Moments of Stock Returns, 2010-2013 \label{tab2}} 
+\end{table}
+
+For this question, first the returns of each stock over the entire
+period were calculated. Next, the first and second moments of each are
+calculated over the two periods before (and including) and after the GFC
+of 2007/08. The resulting moments of each stock are then summarised
+(above).
+
+Note: The returns calculation produces two datasets: 1) a tidy dataset
+with the returns of each stock, 2) a wide dataset with the log-returns
+for each stock (for use at a later stage). The wide dataset is created
+by using the \texttt{spread()} function on the tidy dataset, after
+removing the \emph{Close} and \emph{Return} columns.
+
+\subsection{Comment on the differences between the different
+periods}\label{comment-on-the-differences-between-the-different-periods}
+
+Mean returns in the period 2006-2008 are lower than in the period
+2010-2013. This makes sense as the first period includes the Global
+Financial Crisis. The variance is also lower during the period following
+the crisis.The high variance during the first period is indicative of
+the panic that struck during the crisis, and the high volatility that
+followed the crash.
+
+Look at the following completely random in-text reference: Tsay
+(\protect\hyperlink{ref-tsay1989}{1989})
+
+\section{\texorpdfstring{Question 2
+\label{Q2}}{Question 2 }}\label{question-2}
+
+\subsection{Calculate the unconditional (full sample) correlations
+between the
+stocks.}\label{calculate-the-unconditional-full-sample-correlations-between-the-stocks.}
+
+\begin{table}[H]
+\centering
+\scalebox{0.7}{
+\begin{tabular}{rrrrrrrr}
+  \hline
+ & JSE.ABSP.Close & JSE.BVT.Close & JSE.FSR.Close & JSE.NBKP.Close & JSE.RMH.Close & JSE.SBK.Close & JSE.SLM.Close \\ 
+  \hline
+JSE.ABSP.Close & 1.00 & -0.42 & -0.44 & 0.92 & -0.44 & -0.48 & -0.48 \\ 
+  JSE.BVT.Close & -0.42 & 1.00 & 0.95 & -0.41 & 0.93 & 0.90 & 0.98 \\ 
+  JSE.FSR.Close & -0.44 & 0.95 & 1.00 & -0.43 & 0.98 & 0.93 & 0.97 \\ 
+  JSE.NBKP.Close & 0.92 & -0.41 & -0.43 & 1.00 & -0.43 & -0.45 & -0.48 \\ 
+  JSE.RMH.Close & -0.44 & 0.93 & 0.98 & -0.43 & 1.00 & 0.94 & 0.94 \\ 
+  JSE.SBK.Close & -0.48 & 0.90 & 0.93 & -0.45 & 0.94 & 1.00 & 0.91 \\ 
+  JSE.SLM.Close & -0.48 & 0.98 & 0.97 & -0.48 & 0.94 & 0.91 & 1.00 \\ 
+   \hline
+\end{tabular}
+}
+\caption{Unconditional Correlations Between the Stocks \label{tab3}} 
+\end{table}
+
+\section{\texorpdfstring{Question 3
+\label{Q3}}{Question 3 }}\label{question-3}
+
+\subsection{Plot the univariate GARCH ht processes for each of the
+series.}\label{plot-the-univariate-garch-ht-processes-for-each-of-the-series.}
+
+The wide dataset of log-returns of each stock (produced in the returns
+calculation of Question 1 \ref{Q1}) is used for this question.
+
+\begin{verbatim}
+## 
+## please wait...calculating quantiles...
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Lisa_Tutorial_files/figure-latex/figure1-1} 
+
+}
+
+\caption{GARCH Univariate Plot \label{plot1}}\label{fig:figure1}
+\end{figure}
+
+\section{\texorpdfstring{Question 4
+\label{Q4}}{Question 4 }}\label{question-4}
+
+\subsection{Plot the cumulative returns series of a portfolio that is
+equally weighted to each of the stocks - reweighted each year on the
+last day of
+June}\label{plot-the-cumulative-returns-series-of-a-portfolio-that-is-equally-weighted-to-each-of-the-stocks---reweighted-each-year-on-the-last-day-of-june}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{Lisa_Tutorial_files/figure-latex/figure2-1} 
+
+}
+
+\caption{Cumulative Plot \label{plot2}}\label{fig:figure2}
+\end{figure}
+
+The above plot illusatrates the cumulative returns of the equally
+weighted portfolio of the stocks, over the entire period. I was unable
+to annually reweight the portfolio on the last day of June.
+
+\newpage
+
+\section*{References}\label{references}
+\addcontentsline{toc}{section}{References}
+
+\hypertarget{refs}{}
+\hypertarget{ref-tsay1989}{}
+Tsay, Ruey S. 1989. ``Testing and Modeling Threshold Autoregressive
+Processes.'' \emph{Journal of the American Statistical Association} 84
+(405). Taylor \& Francis Group: 231--40.
+
+% Force include bibliography in my chosen format:
+
+\bibliographystyle{Tex/Texevier}
+\bibliography{Tex/ref}
+
+
+
+
+
+\end{document}
+>>>>>>> 3dc00ed77eacc1a7de76b869918382bec92f4710

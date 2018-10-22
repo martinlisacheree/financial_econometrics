@@ -1,2 +1,7 @@
+<<<<<<< HEAD
 % Insert custom packages here as follows
 % \usepackage{tikz}
+=======
+% Insert custom packages here as follows
+% \usepackage{tikz}
+>>>>>>> 3dc00ed77eacc1a7de76b869918382bec92f4710
